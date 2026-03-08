@@ -76,7 +76,7 @@ Restaurant-Management-System : (v0.0.1-SNAPSHOT)
 
 ### Check Health
 ```bash
-curl http://localhost:8080/api/users
+curl http://localhost:8081/api/users
 ```
 
 Expected: Empty list or sample users (if DataInitializer ran)
@@ -98,12 +98,12 @@ SELECT * FROM customers;
 
 ### 1. Create a User
 ```bash
-curl -X POST http://localhost:8080/api/users \
+curl -X POST http://localhost:8081/api/users \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "test_waiter",
+    "username": "mugabo_waiter",
     "password": "password123",
-    "fullName": "Test Waiter",
+    "fullName": "Mugabo Waiter",
     "role": "WAITER",
     "phone": "+250788999999",
     "email": "test@restaurant.rw"
@@ -112,12 +112,12 @@ curl -X POST http://localhost:8080/api/users \
 
 ### 2. Get All Users
 ```bash
-curl http://localhost:8080/api/users?page=0&size=10
+curl http://localhost:8081/api/users?page=0&size=10
 ```
 
 ### 3. Create Menu Item
 ```bash
-curl -X POST http://localhost:8080/api/menu-items \
+curl -X POST http://localhost:8081/api/menu-items \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test Dish",
@@ -131,12 +131,12 @@ curl -X POST http://localhost:8080/api/menu-items \
 
 ### 4. Get Menu Items (with sorting)
 ```bash
-curl "http://localhost:8080/api/menu-items?page=0&size=10&sortBy=price&sortDir=asc"
+curl "http://localhost:8081/api/menu-items?page=0&size=10&sortBy=price&sortDir=asc"
 ```
 
 ### 5. Create Customer
 ```bash
-curl -X POST http://localhost:8080/api/customers \
+curl -X POST http://localhost:8081/api/customers \
   -H "Content-Type: application/json" \
   -d '{
     "name": "Test Customer",
@@ -148,7 +148,7 @@ curl -X POST http://localhost:8080/api/customers \
 
 ### 6. Create Address
 ```bash
-curl -X POST http://localhost:8080/api/addresses \
+curl -X POST http://localhost:8081/api/addresses \
   -H "Content-Type: application/json" \
   -d '{
     "customerId": 1,
@@ -163,12 +163,12 @@ curl -X POST http://localhost:8080/api/addresses \
 
 ### 7. Query Customers by Province
 ```bash
-curl http://localhost:8080/api/customers/province/Kigali
+curl http://localhost:8081/api/customers/province/Kigali
 ```
 
 ### 8. Create Order
 ```bash
-curl -X POST http://localhost:8080/api/orders \
+curl -X POST http://localhost:8081/api/orders \
   -H "Content-Type: application/json" \
   -H "X-User-Id: 2" \
   -d '{
@@ -214,6 +214,17 @@ The application automatically initializes sample data on first run:
 **Solution:** Change port in `application.properties`
 ```properties
 server.port=8081
+```
+
+Or kill the process using port 8080:
+```bash
+# Windows
+netstat -ano | findstr :8080
+taskkill /PID <PID> /F
+
+# Linux/Mac
+lsof -i :8080
+kill -9 <PID>
 ```
 
 ### Issue: Database connection failed
@@ -286,9 +297,9 @@ Add to `pom.xml`:
 ## API Documentation
 
 Once running, access:
-- **Base URL**: http://localhost:8080
-- **Health Check**: http://localhost:8080/api/users
-- **Sample Request**: http://localhost:8080/api/menu-items?page=0&size=10
+- **Base URL**: http://localhost:8081
+- **Health Check**: http://localhost:8081/api/users
+- **Sample Request**: http://localhost:8081/api/menu-items?page=0&size=10
 
 ## Support
 
@@ -332,7 +343,7 @@ Add Spring Boot Actuator:
 </dependency>
 ```
 
-Access: http://localhost:8080/actuator/health
+Access: http://localhost:8081/actuator/health
 
 ## Production Considerations
 
