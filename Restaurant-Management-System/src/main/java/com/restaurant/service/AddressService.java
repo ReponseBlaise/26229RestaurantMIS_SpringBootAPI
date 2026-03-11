@@ -1,11 +1,14 @@
 package com.restaurant.service;
 
 import com.restaurant.dto.request.AddressRequest;
+import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.model.Address;
 import com.restaurant.model.Customer;
+import com.restaurant.model.Location;
 import com.restaurant.repository.AddressRepository;
 import com.restaurant.repository.CustomerRepository;
+import com.restaurant.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,17 +21,24 @@ import java.util.List;
 public class AddressService {
     private final AddressRepository addressRepository;
     private final CustomerRepository customerRepository;
+    private final LocationRepository locationRepository;
 
     @Transactional
     public Address createAddress(AddressRequest request) {
         Customer customer = customerRepository.findById(request.getCustomerId())
             .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
 
+        Location village = locationRepository.findById(request.getVillageId())
+            .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
+
+        // Validate that it's actually a village
+        if (village.getType() != Location.LocationType.VILLAGE) {
+            throw new BadRequestException("Location must be a VILLAGE");
+        }
+
         Address address = Address.builder()
             .customer(customer)
-            .province(request.getProvince())
-            .city(request.getCity())
-            .district(request.getDistrict())
+            .village(village)
             .streetAddress(request.getStreetAddress())
             .postalCode(request.getPostalCode())
             .isDefault(request.getIsDefault())
@@ -41,8 +51,8 @@ public class AddressService {
         return addressRepository.findByCustomerId(customerId);
     }
 
-    public Page<Address> getAddressesByProvince(String province, Pageable pageable) {
-        return addressRepository.findByProvince(province, pageable);
+    public Page<Address> getAddressesByProvince(String provinceName, Pageable pageable) {
+        return addressRepository.findByVillage_Parent_Parent_Parent_Parent_Name(provinceName, pageable);
     }
 
     public Address getAddressById(Long id) {
@@ -54,9 +64,14 @@ public class AddressService {
     public Address updateAddress(Long id, AddressRequest request) {
         Address address = getAddressById(id);
 
-        address.setProvince(request.getProvince());
-        address.setCity(request.getCity());
-        address.setDistrict(request.getDistrict());
+        Location village = locationRepository.findById(request.getVillageId())
+            .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
+
+        if (village.getType() != Location.LocationType.VILLAGE) {
+            throw new BadRequestException("Location must be a VILLAGE");
+        }
+
+        address.setVillage(village);
         address.setStreetAddress(request.getStreetAddress());
         address.setPostalCode(request.getPostalCode());
         address.setIsDefault(request.getIsDefault());

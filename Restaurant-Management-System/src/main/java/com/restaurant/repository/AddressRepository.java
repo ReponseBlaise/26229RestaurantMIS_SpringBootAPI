@@ -11,9 +11,21 @@ import java.util.List;
 public interface AddressRepository extends JpaRepository<Address, Long> {
     List<Address> findByCustomerId(Long customerId);
     
-    Page<Address> findByProvince(String province, Pageable pageable);
+    // Query by Province through the location hierarchy
+    // Village -> Cell -> Sector -> District -> Province
+    Page<Address> findByVillage_Parent_Parent_Parent_Parent_Name(String provinceName, Pageable pageable);
     
-    Page<Address> findByCity(String city, Pageable pageable);
+    // Query by District
+    Page<Address> findByVillage_Parent_Parent_Parent_Name(String districtName, Pageable pageable);
+    
+    // Query by Sector
+    Page<Address> findByVillage_Parent_Parent_Name(String sectorName, Pageable pageable);
+    
+    // Query by Cell
+    Page<Address> findByVillage_Parent_Name(String cellName, Pageable pageable);
+    
+    // Query by Village
+    Page<Address> findByVillage_Name(String villageName, Pageable pageable);
     
     boolean existsByCustomerIdAndIsDefaultTrue(Long customerId);
 }

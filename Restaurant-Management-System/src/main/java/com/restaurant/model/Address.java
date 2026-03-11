@@ -20,16 +20,12 @@ public class Address {
     @JoinColumn(name = "customer_id")
     private Customer customer;
 
-    @Column(nullable = false, length = 50)
-    private String province; // Kigali, Eastern, Western, Northern, Southern
+    // Link to Village (lowest level) - automatically links to Cell, Sector, District, Province
+    @ManyToOne
+    @JoinColumn(name = "village_id", nullable = false)
+    private Location village;
 
-    @Column(nullable = false, length = 50)
-    private String city; // Kigali City, Huye, Musanze, etc.
-
-    @Column(length = 50)
-    private String district; // Gasabo, Kicukiro, Nyarugenge, etc.
-
-    @Column(name = "street_address", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "street_address", columnDefinition = "TEXT")
     private String streetAddress;
 
     @Column(name = "postal_code", length = 10)

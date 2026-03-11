@@ -8,15 +8,9 @@ public class AddressRequest {
     @NotNull(message = "Customer ID is required")
     private Long customerId;
 
-    @NotBlank(message = "Province is required")
-    private String province; // Kigali, Eastern, Western, Northern, Southern
+    @NotNull(message = "Village ID is required")
+    private Long villageId; // Only need village - it links to Cell → Sector → District → Province
 
-    @NotBlank(message = "City is required")
-    private String city;
-
-    private String district;
-
-    @NotBlank(message = "Street address is required")
     private String streetAddress;
 
     private String postalCode;
