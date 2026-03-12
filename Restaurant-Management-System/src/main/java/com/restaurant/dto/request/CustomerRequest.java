@@ -16,5 +16,8 @@ public class CustomerRequest {
     @Email(message = "Invalid email format")
     private String email;
 
-    private String address;
+    @NotNull(message = "Village ID is required")
+    private Long villageId; // Only need village - it links to Cell → Sector → District → Province
+
+    private String streetAddress;
 }

@@ -4,7 +4,9 @@ import com.restaurant.dto.request.CustomerRequest;
 import com.restaurant.exception.BadRequestException;
 import com.restaurant.exception.ResourceNotFoundException;
 import com.restaurant.model.Customer;
+import com.restaurant.model.Location;
 import com.restaurant.repository.CustomerRepository;
+import com.restaurant.repository.LocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CustomerService {
     private final CustomerRepository customerRepository;
+    private final LocationRepository locationRepository;
 
     @Transactional
     public Customer createCustomer(CustomerRequest request) {
@@ -23,11 +26,19 @@ public class CustomerService {
             throw new BadRequestException("Phone number already exists");
         }
 
+        Location village = locationRepository.findById(request.getVillageId())
+            .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
+
+        if (village.getType() != Location.LocationType.VILLAGE) {
+            throw new BadRequestException("Location must be a VILLAGE");
+        }
+
         Customer customer = Customer.builder()
             .name(request.getName())
             .phone(request.getPhone())
             .email(request.getEmail())
-            .address(request.getAddress())
+            .village(village)
+            .streetAddress(request.getStreetAddress())
             .build();
 
         return customerRepository.save(customer);
@@ -60,10 +71,18 @@ public class CustomerService {
             throw new BadRequestException("Phone number already exists");
         }
 
+        Location village = locationRepository.findById(request.getVillageId())
+            .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
+
+        if (village.getType() != Location.LocationType.VILLAGE) {
+            throw new BadRequestException("Location must be a VILLAGE");
+        }
+
         customer.setName(request.getName());
         customer.setPhone(request.getPhone());
         customer.setEmail(request.getEmail());
-        customer.setAddress(request.getAddress());
+        customer.setVillage(village);
+        customer.setStreetAddress(request.getStreetAddress());
 
         return customerRepository.save(customer);
     }

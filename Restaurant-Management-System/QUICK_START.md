@@ -142,31 +142,17 @@ curl -X POST http://localhost:8081/api/customers \
     "name": "Test Customer",
     "phone": "+250788888888",
     "email": "customer@test.rw",
-    "address": "Kigali"
+    "villageId": 1,
+    "streetAddress": "KG 10 Ave, House #5"
   }'
 ```
 
-### 6. Create Address
-```bash
-curl -X POST http://localhost:8081/api/addresses \
-  -H "Content-Type: application/json" \
-  -d '{
-    "customerId": 1,
-    "province": "Kigali",
-    "city": "Kigali City",
-    "district": "Gasabo",
-    "streetAddress": "KG 10 Ave",
-    "postalCode": "KG001",
-    "isDefault": true
-  }'
-```
-
-### 7. Query Customers by Province
+### 6. Query Customers by Province
 ```bash
 curl http://localhost:8081/api/customers/province/Kigali
 ```
 
-### 8. Create Order
+### 7. Create Order
 ```bash
 curl -X POST http://localhost:8081/api/orders \
   -H "Content-Type: application/json" \

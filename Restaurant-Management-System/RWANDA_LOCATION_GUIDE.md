@@ -1,7 +1,7 @@
 # Rwanda Location Hierarchy Implementation Guide
 
 ## Overview
-This system implements Rwanda's administrative structure using a **self-referencing Location entity**:
+This system implements Rwanda's administrative structure using a **self-referencing Location entity** with location stored **directly in the Customer entity**:
 ```
 Province → District → Sector → Cell → Village
 ```
@@ -19,35 +19,37 @@ CREATE TABLE locations (
 );
 ```
 
-### Address Table
+### Customer Table (with Village)
 ```sql
-CREATE TABLE addresses (
+CREATE TABLE customers (
     id BIGINT PRIMARY KEY,
-    customer_id BIGINT REFERENCES customers(id),
+    name VARCHAR(100) NOT NULL,
+    phone VARCHAR(15) UNIQUE NOT NULL,
+    email VARCHAR(100),
     village_id BIGINT REFERENCES locations(id), -- Links to VILLAGE only
     street_address TEXT,
-    postal_code VARCHAR(10),
-    is_default BOOLEAN
+    created_at TIMESTAMP
 );
 ```
 
 ## How It Works
 
 ### 1. Hierarchical Relationship
-When you save an address with a **Village**, it automatically links to:
+When you create a customer with a **Village**, it automatically links to:
 - Village → Cell → Sector → District → Province
 
 **Example:**
 ```
-Kimironko Village
-  └─ Kimironko Cell
-      └─ Remera Sector
-          └─ Gasabo District
-              └─ Kigali Province
+Customer: Jean Mugabo
+  └─ Kimironko Village
+      └─ Kimironko Cell
+          └─ Remera Sector
+              └─ Gasabo District
+                  └─ Kigali Province
 ```
 
 ### 2. Querying by Any Level
-You can retrieve customers/addresses by:
+You can retrieve customers by:
 - Province name
 - District name
 - Sector name
@@ -151,9 +153,9 @@ Content-Type: application/json
 }
 ```
 
-### Step 2: Create Customer with Address
+### Step 2: Create Customer with Village Location
 
-#### 2.1 Create Customer
+#### 2.1 Create Customer (Using Village ID)
 ```http
 POST http://localhost:8081/api/customers
 Content-Type: application/json
@@ -161,25 +163,13 @@ Content-Type: application/json
 {
   "name": "Jean Mugabo",
   "phone": "+250788123456",
-  "email": "mugabo@email.rw"
-}
-```
-
-#### 2.2 Create Address (Using Village ID Only)
-```http
-POST http://localhost:8081/api/addresses
-Content-Type: application/json
-
-{
-  "customerId": 1,
+  "email": "mugabo@email.rw",
   "villageId": 5,
-  "streetAddress": "KG 15 Ave, House #25",
-  "postalCode": "KG001",
-  "isDefault": true
+  "streetAddress": "KG 15 Ave, House #25"
 }
 ```
 
-**✅ That's it! The address is now linked to:**
+**✅ That's it! The customer is now linked to:**
 - Village: Kimironko I
 - Cell: Kimironko
 - Sector: Remera
@@ -198,9 +188,24 @@ GET http://localhost:8081/api/customers/province/Kigali?page=0&size=10
 GET http://localhost:8081/api/addresses/province/Kigali?page=0&size=10
 ```
 
-#### Get Addresses by District
+#### Get Customers by District
 ```http
-GET http://localhost:8081/api/addresses/district/Gasabo?page=0&size=10
+GET http://localhost:8081/api/customers/district/Gasabo?page=0&size=10
+```
+
+#### Get Customers by Sector
+```http
+GET http://localhost:8081/api/customers/sector/Remera?page=0&size=10
+```
+
+#### Get Customers by Cell
+```http
+GET http://localhost:8081/api/customers/cell/Kimironko?page=0&size=10
+```
+
+#### Get Customers by Village
+```http
+GET http://localhost:8081/api/customers/village/Kimironko%20I?page=0&size=10
 ```
 
 ## Location API Endpoints
@@ -233,18 +238,20 @@ Kigali (Province)
 ## Benefits
 
 1. **Data Integrity**: Enforces proper hierarchy
-2. **Easy Queries**: Query by any administrative level
+2. **Easy Queries**: Query customers by any administrative level
 3. **Automatic Linking**: Village automatically links to all parent levels
 4. **Scalable**: Easy to add new locations
 5. **Flexible**: Can query at any level of the hierarchy
+6. **Simplified**: No separate Address entity needed
 
 ## Reference
 Full Rwanda administrative structure: https://kindly-mouth-eff.notion.site/Rwanda-Location-Structure-31e08f5a673880f394e8ceb65d4be927
 
 ## Important Notes
 
-- ✅ Always use **Village ID** when creating addresses
+- ✅ Always use **Village ID** when creating customers
 - ✅ Never store Province/District/Sector/Cell as separate strings
 - ✅ The hierarchy is enforced: District must have Province parent, Sector must have District parent, etc.
 - ✅ Location codes should be unique across the entire system
-- ✅ You can query customers/addresses by any level (Province, District, Sector, Cell, Village)
+- ✅ You can query customers by any level (Province, District, Sector, Cell, Village)
+- ✅ No separate Address entity - location is directly in Customer

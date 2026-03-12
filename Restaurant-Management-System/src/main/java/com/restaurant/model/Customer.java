@@ -26,15 +26,16 @@ public class Customer {
     @Column(length = 100)
     private String email;
 
-    @Column(columnDefinition = "TEXT")
-    private String address;
+    // Link to Village (lowest level) - automatically links to Cell, Sector, District, Province
+    @ManyToOne
+    @JoinColumn(name = "village_id")
+    private Location village;
+
+    @Column(name = "street_address", columnDefinition = "TEXT")
+    private String streetAddress;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
-
-    // One-to-Many: Customer can have multiple addresses
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private List<Address> addresses = new ArrayList<>();
 
     // One-to-Many: Customer can place multiple orders
     @OneToMany(mappedBy = "customer", fetch = FetchType.LAZY)
