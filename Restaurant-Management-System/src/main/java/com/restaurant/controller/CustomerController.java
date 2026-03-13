@@ -70,6 +70,46 @@ public class CustomerController {
         return ResponseEntity.ok(customers);
     }
 
+    @GetMapping("/district/{district}")
+    public ResponseEntity<Page<Customer>> getCustomersByDistrict(
+            @PathVariable String district,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Customer> customers = customerService.getCustomersByDistrict(district, pageable);
+        return ResponseEntity.ok(customers);
+    }
+
+    @GetMapping("/sector/{sector}")
+    public ResponseEntity<Page<Customer>> getCustomersBySector(
+            @PathVariable String sector,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Customer> customers = customerService.getCustomersBySector(sector, pageable);
+        return ResponseEntity.ok(customers);
+    }
+
+    @GetMapping("/cell/{cell}")
+    public ResponseEntity<Page<Customer>> getCustomersByCell(
+            @PathVariable String cell,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Customer> customers = customerService.getCustomersByCell(cell, pageable);
+        return ResponseEntity.ok(customers);
+    }
+
+    @GetMapping("/village/{village}")
+    public ResponseEntity<Page<Customer>> getCustomersByVillage(
+            @PathVariable String village,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Customer> customers = customerService.getCustomersByVillage(village, pageable);
+        return ResponseEntity.ok(customers);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<Customer> updateCustomer(
             @PathVariable Long id,

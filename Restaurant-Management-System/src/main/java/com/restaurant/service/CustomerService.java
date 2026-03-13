@@ -26,11 +26,14 @@ public class CustomerService {
             throw new BadRequestException("Phone number already exists");
         }
 
-        Location village = locationRepository.findById(request.getVillageId())
-            .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
+        Location village = null;
+        if (request.getVillageId() != null) {
+            village = locationRepository.findById(request.getVillageId())
+                .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
 
-        if (village.getType() != Location.LocationType.VILLAGE) {
-            throw new BadRequestException("Location must be a VILLAGE");
+            if (village.getType() != Location.LocationType.VILLAGE) {
+                throw new BadRequestException("Location must be a VILLAGE");
+            }
         }
 
         Customer customer = Customer.builder()
@@ -62,6 +65,22 @@ public class CustomerService {
         return customerRepository.findByProvince(province, pageable);
     }
 
+    public Page<Customer> getCustomersByDistrict(String district, Pageable pageable) {
+        return customerRepository.findByDistrict(district, pageable);
+    }
+
+    public Page<Customer> getCustomersBySector(String sector, Pageable pageable) {
+        return customerRepository.findBySector(sector, pageable);
+    }
+
+    public Page<Customer> getCustomersByCell(String cell, Pageable pageable) {
+        return customerRepository.findByCell(cell, pageable);
+    }
+
+    public Page<Customer> getCustomersByVillage(String village, Pageable pageable) {
+        return customerRepository.findByVillage(village, pageable);
+    }
+
     @Transactional
     public Customer updateCustomer(Long id, CustomerRequest request) {
         Customer customer = getCustomerById(id);
@@ -71,11 +90,14 @@ public class CustomerService {
             throw new BadRequestException("Phone number already exists");
         }
 
-        Location village = locationRepository.findById(request.getVillageId())
-            .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
+        Location village = null;
+        if (request.getVillageId() != null) {
+            village = locationRepository.findById(request.getVillageId())
+                .orElseThrow(() -> new ResourceNotFoundException("Village not found"));
 
-        if (village.getType() != Location.LocationType.VILLAGE) {
-            throw new BadRequestException("Location must be a VILLAGE");
+            if (village.getType() != Location.LocationType.VILLAGE) {
+                throw new BadRequestException("Location must be a VILLAGE");
+            }
         }
 
         customer.setName(request.getName());

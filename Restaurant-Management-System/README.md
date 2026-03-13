@@ -303,6 +303,13 @@ Content-Type: application/json
 {
   "name": "Patrick Habimana",
   "phone": "+250788567890",
+  "email": "habimana@email.rw"
+}
+
+// OR with location
+{
+  "name": "Patrick Habimana",
+  "phone": "+250788567890",
   "email": "habimana@email.rw",
   "villageId": 5,
   "streetAddress": "KG 15 Ave, House #25"
@@ -334,6 +341,26 @@ Response: 200 OK
 #### Get Customers by Province (Paginated)
 ```
 GET /api/customers/province/Kigali/paginated?page=0&size=10
+```
+
+#### Get Customers by District
+```
+GET /api/customers/district/Gasabo?page=0&size=10
+```
+
+#### Get Customers by Sector
+```
+GET /api/customers/sector/Remera?page=0&size=10
+```
+
+#### Get Customers by Cell
+```
+GET /api/customers/cell/Kimironko?page=0&size=10
+```
+
+#### Get Customers by Village
+```
+GET /api/customers/village/Kimironko%20I?page=0&size=10
 ```
 
 ### Address Management

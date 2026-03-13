@@ -127,9 +127,12 @@ Content-Type: application/json
   "name": "Patrick Habimana",
   "phone": "+250788567890",
   "email": "habimana@email.rw",
-  "address": "KG 15 Ave, Kigali"
+  "villageId": 5,
+  "streetAddress": "KG 15 Ave, House #25"
 }
 ```
+
+**Note:** `villageId` is optional. You can create customers without location data.
 
 #### Customer 2
 ```http
@@ -140,7 +143,8 @@ Content-Type: application/json
   "name": "Claudine Uwera",
   "phone": "+250788678901",
   "email": "uwera@email.rw",
-  "address": "KN 5 Rd, Kigali"
+  "villageId": 5,
+  "streetAddress": "KN 5 Rd, Kigali"
 }
 ```
 
@@ -297,7 +301,8 @@ Content-Type: application/json
   "name": "Patrick Habimana",
   "phone": "+250788567890",
   "email": "habimana.updated@email.rw",
-  "address": "KG 15 Ave, Kigali - Updated"
+  "villageId": 5,
+  "streetAddress": "KG 15 Ave, Kigali - Updated"
 }
 ```
 

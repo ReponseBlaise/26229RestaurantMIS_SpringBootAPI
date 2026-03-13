@@ -141,11 +141,11 @@ curl -X POST http://localhost:8081/api/customers \
   -d '{
     "name": "Test Customer",
     "phone": "+250788888888",
-    "email": "customer@test.rw",
-    "villageId": 1,
-    "streetAddress": "KG 10 Ave, House #5"
+    "email": "customer@test.rw"
   }'
 ```
+
+**Note:** You can optionally include `villageId` if you have created locations.
 
 ### 6. Query Customers by Province
 ```bash
