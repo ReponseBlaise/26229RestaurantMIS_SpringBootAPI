@@ -58,7 +58,7 @@ POST http://localhost:8081/api/locations
 // Response: { "id": 5, ... }
 ```
 
-### Step 2: Create Customer (Use Village ID only)
+### Step 2: Create Customer (Use Village ID - Optional)
 
 ```json
 POST http://localhost:8081/api/customers
@@ -71,7 +71,9 @@ POST http://localhost:8081/api/customers
 }
 ```
 
-**That's it!** The customer is automatically linked to:
+**Note:** Village ID is optional. You can create customers without location data for backward compatibility.
+
+**When Village ID is provided, the customer is automatically linked to:**
 - Village: Kimironko I
 - Cell: Kimironko  
 - Sector: Remera
@@ -123,6 +125,7 @@ GET http://localhost:8081/api/customers/village/Kimironko%20I
 3. **Automatic Linking**: Village links to all parent levels
 4. **No Duplication**: Location data stored once, referenced many times
 5. **Scalable**: Easy to add new locations
+6. **Backward Compatible**: Village ID is optional for existing customers
 
 ## Location API Endpoints
 

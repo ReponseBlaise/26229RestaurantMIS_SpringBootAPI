@@ -12,15 +12,16 @@ A complete Restaurant Management System built with **Spring Boot 4.0.3** and **J
 
 ## Database Schema
 
-### Tables Overview (8 Tables)
+### Tables Overview (9 Tables)
 1. **users** - System users with roles
 2. **customers** - Restaurant customers
-3. **addresses** - Customer addresses with province field
-4. **menu_items** - Food and beverage items
-5. **meal_deals** - Combo deals (Many-to-Many with menu_items)
-6. **orders** - Customer orders
-7. **order_items** - Order line items
-8. **receipts** - Payment receipts
+3. **locations** - Rwanda administrative hierarchy (Province → District → Sector → Cell → Village)
+4. **addresses** - Customer addresses (legacy support)
+5. **menu_items** - Food and beverage items
+6. **meal_deals** - Combo deals (Many-to-Many with menu_items)
+7. **orders** - Customer orders
+8. **order_items** - Order line items
+9. **receipts** - Payment receipts
 
 ## Entity Relationship Diagram (ERD) Explanation
 
@@ -66,32 +67,43 @@ A complete Restaurant Management System built with **Spring Boot 4.0.3** and **J
 
 ## Key Features Implementation
 
-### 1. Location/Address with Province Field (3 Marks)
+### 1. Location/Address with Rwanda Hierarchy (3 Marks)
 
-**Address Entity** includes:
+**Location Entity** implements self-referencing hierarchy:
 ```java
-@Column(nullable = false, length = 50)
-private String province; // Kigali, Eastern, Western, Northern, Southern
+@ManyToOne
+@JoinColumn(name = "parent_id")
+private Location parent; // Province → District → Sector → Cell → Village
+```
+
+**Customer Entity** links to Village:
+```java
+@ManyToOne
+@JoinColumn(name = "village_id") // Nullable for backward compatibility
+private Location village;
 ```
 
 **Province-based Query**:
 ```java
 // Repository method
-@Query("SELECT DISTINCT c FROM Customer c JOIN c.addresses a WHERE a.province = :province")
+@Query("SELECT DISTINCT c FROM Customer c WHERE c.village.parent.parent.parent.parent.name = :province")
 List<Customer> findByProvince(@Param("province") String province);
 ```
 
-**API Endpoint**:
+**API Endpoints**:
 ```
 GET /api/customers/province/{province}
-Example: GET /api/customers/province/Kigali
+GET /api/customers/district/{district}
+GET /api/customers/sector/{sector}
+GET /api/customers/cell/{cell}
+GET /api/customers/village/{village}
 ```
 
 **Explanation**: 
-- Addresses are linked to customers via `customer_id` foreign key
-- One-to-Many relationship allows multiple addresses per customer
-- Province field enables location-based customer filtering
-- Useful for delivery zones, regional analytics, and targeted marketing
+- Self-referencing Location table stores Rwanda's 5-level hierarchy
+- Customer links to Village (lowest level), automatically connecting to all parent levels
+- Enables querying customers by any administrative level
+- Village ID is nullable for backward compatibility with existing customers
 
 ### 2. Sorting Implementation (3 Marks)
 
@@ -292,7 +304,8 @@ Content-Type: application/json
   "name": "Patrick Habimana",
   "phone": "+250788567890",
   "email": "habimana@email.rw",
-  "address": "KG 15 Ave, Kigali"
+  "villageId": 5,
+  "streetAddress": "KG 15 Ave, House #25"
 }
 
 Response: 201 Created
@@ -540,6 +553,15 @@ Content-Disposition: attachment; filename="receipt-1.txt"
 - Northern Province
 - Southern Province
 
+### Location Hierarchy Example
+```
+Kigali (Province)
+└── Gasabo (District)
+    └── Remera (Sector)
+        └── Kimironko (Cell)
+            └── Kimironko I (Village)
+```
+
 ## Setup Instructions
 
 ### Prerequisites
@@ -607,16 +629,16 @@ All errors return consistent format:
 ## Assessment Criteria Coverage
 
 ✅ **Project Setup & Architecture** (4 Marks): Complete package structure
-✅ **Database Tables** (8 Tables): All entities with proper annotations
+✅ **Database Tables** (9 Tables): All entities with proper annotations
 ✅ **ERD Explanation** (3 Marks): All relationships documented
-✅ **Location/Address** (3 Marks): Province field with queries
+✅ **Location/Address** (3 Marks): Rwanda hierarchy with self-referencing Location entity
 ✅ **Sorting** (3 Marks): Implemented on all GET endpoints
 ✅ **Pagination** (3 Marks): Implemented with benefits explained
 ✅ **Many-to-Many** (3 Marks): MenuItem ↔ MealDeal
-✅ **One-to-Many** (3 Marks): Multiple relationships
+✅ **One-to-Many** (3 Marks): Multiple relationships including Location self-reference
 ✅ **One-to-One** (2 Marks): Order ↔ Receipt
 ✅ **existsBy()** (Bonus): Multiple implementations
-✅ **Province Query** (Bonus): Customer filtering by province
+✅ **Province Query** (Bonus): Customer filtering by any administrative level
 ✅ **Receipt Download** (Bonus): PDF/Text generation
 
 ## Author

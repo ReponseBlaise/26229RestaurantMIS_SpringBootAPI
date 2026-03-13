@@ -26,7 +26,7 @@ CREATE TABLE customers (
     name VARCHAR(100) NOT NULL,
     phone VARCHAR(15) UNIQUE NOT NULL,
     email VARCHAR(100),
-    village_id BIGINT REFERENCES locations(id), -- Links to VILLAGE only
+    village_id BIGINT REFERENCES locations(id), -- Links to VILLAGE (nullable for backward compatibility)
     street_address TEXT,
     created_at TIMESTAMP
 );
@@ -249,9 +249,10 @@ Full Rwanda administrative structure: https://kindly-mouth-eff.notion.site/Rwand
 
 ## Important Notes
 
-- ✅ Always use **Village ID** when creating customers
+- ✅ Use **Village ID** when creating customers (optional for backward compatibility)
 - ✅ Never store Province/District/Sector/Cell as separate strings
 - ✅ The hierarchy is enforced: District must have Province parent, Sector must have District parent, etc.
 - ✅ Location codes should be unique across the entire system
 - ✅ You can query customers by any level (Province, District, Sector, Cell, Village)
 - ✅ No separate Address entity - location is directly in Customer
+- ✅ Village ID is nullable to support existing customers without location data
