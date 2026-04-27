@@ -1,5 +1,6 @@
 package com.restaurant.service;
 
+import com.restaurant.dto.request.LoginRequest;
 import com.restaurant.dto.request.UserRequest;
 import com.restaurant.dto.response.UserResponse;
 import com.restaurant.exception.BadRequestException;
@@ -18,6 +19,26 @@ public class UserService {
     private final UserRepository userRepository;
 
     @Transactional
+    public UserResponse registerUser(UserRequest request) {
+        return createUser(request);
+    }
+
+    public UserResponse authenticateUser(LoginRequest request) {
+        User user = userRepository.findByUsername(request.getUsername())
+            .orElseThrow(() -> new BadRequestException("Invalid username or password"));
+
+        if (!user.getPassword().equals(request.getPassword())) {
+            throw new BadRequestException("Invalid username or password");
+        }
+
+        if (Boolean.FALSE.equals(user.getIsActive())) {
+            throw new BadRequestException("User account is inactive");
+        }
+
+        return mapToResponse(user);
+    }
+
+    @Transactional
     public UserResponse createUser(UserRequest request) {
         // Use existsBy method to check if username already exists
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -30,7 +51,7 @@ public class UserService {
 
         User user = User.builder()
             .username(request.getUsername())
-            .password(request.getPassword()) // In production, hash the password
+            .password(request.getPassword())
             .fullName(request.getFullName())
             .role(request.getRole())
             .phone(request.getPhone())

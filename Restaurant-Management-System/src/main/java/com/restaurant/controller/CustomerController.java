@@ -1,6 +1,7 @@
 package com.restaurant.controller;
 
 import com.restaurant.dto.request.CustomerRequest;
+import com.restaurant.dto.response.ApiResponse;
 import com.restaurant.model.Customer;
 import com.restaurant.service.CustomerService;
 import jakarta.validation.Valid;
@@ -21,19 +22,19 @@ public class CustomerController {
     private final CustomerService customerService;
 
     @PostMapping
-    public ResponseEntity<Customer> createCustomer(@Valid @RequestBody CustomerRequest request) {
+    public ResponseEntity<ApiResponse<Customer>> createCustomer(@Valid @RequestBody CustomerRequest request) {
         Customer customer = customerService.createCustomer(request);
-        return new ResponseEntity<>(customer, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Customer created successfully", customer), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<Customer>> getCustomerById(@PathVariable Long id) {
         Customer customer = customerService.getCustomerById(id);
-        return ResponseEntity.ok(customer);
+        return ResponseEntity.ok(ApiResponse.success(customer));
     }
 
     @GetMapping
-    public ResponseEntity<Page<Customer>> getAllCustomers(
+    public ResponseEntity<ApiResponse<Page<Customer>>> getAllCustomers(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
@@ -44,18 +45,18 @@ public class CustomerController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<Customer> customers = customerService.getAllCustomers(pageable);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     // Province-based query endpoint
     @GetMapping("/province/{province}")
-    public ResponseEntity<List<Customer>> getCustomersByProvince(@PathVariable String province) {
+    public ResponseEntity<ApiResponse<List<Customer>>> getCustomersByProvince(@PathVariable String province) {
         List<Customer> customers = customerService.getCustomersByProvince(province);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     @GetMapping("/province/{province}/paginated")
-    public ResponseEntity<Page<Customer>> getCustomersByProvincePageable(
+    public ResponseEntity<ApiResponse<Page<Customer>>> getCustomersByProvincePageable(
             @PathVariable String province,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -67,55 +68,55 @@ public class CustomerController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<Customer> customers = customerService.getCustomersByProvince(province, pageable);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     @GetMapping("/district/{district}")
-    public ResponseEntity<Page<Customer>> getCustomersByDistrict(
+    public ResponseEntity<ApiResponse<Page<Customer>>> getCustomersByDistrict(
             @PathVariable String district,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Customer> customers = customerService.getCustomersByDistrict(district, pageable);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     @GetMapping("/sector/{sector}")
-    public ResponseEntity<Page<Customer>> getCustomersBySector(
+    public ResponseEntity<ApiResponse<Page<Customer>>> getCustomersBySector(
             @PathVariable String sector,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Customer> customers = customerService.getCustomersBySector(sector, pageable);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     @GetMapping("/cell/{cell}")
-    public ResponseEntity<Page<Customer>> getCustomersByCell(
+    public ResponseEntity<ApiResponse<Page<Customer>>> getCustomersByCell(
             @PathVariable String cell,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Customer> customers = customerService.getCustomersByCell(cell, pageable);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     @GetMapping("/village/{village}")
-    public ResponseEntity<Page<Customer>> getCustomersByVillage(
+    public ResponseEntity<ApiResponse<Page<Customer>>> getCustomersByVillage(
             @PathVariable String village,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size) {
         Pageable pageable = PageRequest.of(page, size);
         Page<Customer> customers = customerService.getCustomersByVillage(village, pageable);
-        return ResponseEntity.ok(customers);
+        return ResponseEntity.ok(ApiResponse.success(customers));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Customer> updateCustomer(
+    public ResponseEntity<ApiResponse<Customer>> updateCustomer(
             @PathVariable Long id,
             @Valid @RequestBody CustomerRequest request) {
         Customer customer = customerService.updateCustomer(id, request);
-        return ResponseEntity.ok(customer);
+        return ResponseEntity.ok(ApiResponse.success("Customer updated successfully", customer));
     }
 
     @DeleteMapping("/{id}")

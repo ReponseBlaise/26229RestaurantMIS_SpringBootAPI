@@ -1,5 +1,6 @@
 package com.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
@@ -41,11 +42,11 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // One-to-Many: User (Waiter) can handle multiple orders
+    @JsonIgnore
     @OneToMany(mappedBy = "waiter")
     private List<Order> orders;
 
-    // One-to-Many: User (Cashier) can generate multiple receipts
+    @JsonIgnore
     @OneToMany(mappedBy = "generatedBy")
     private List<Receipt> receipts;
 

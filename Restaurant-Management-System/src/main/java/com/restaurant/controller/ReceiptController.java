@@ -1,5 +1,6 @@
 package com.restaurant.controller;
 
+import com.restaurant.dto.response.ApiResponse;
 import com.restaurant.dto.response.ReceiptResponse;
 import com.restaurant.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
@@ -17,17 +18,17 @@ public class ReceiptController {
     private final ReceiptService receiptService;
 
     @PostMapping("/order/{orderId}")
-    public ResponseEntity<ReceiptResponse> generateReceipt(
+    public ResponseEntity<ApiResponse<ReceiptResponse>> generateReceipt(
             @PathVariable Long orderId,
             @RequestHeader("X-User-Id") Long cashierId) {
         ReceiptResponse response = receiptService.generateReceipt(orderId, cashierId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Receipt generated successfully", response), HttpStatus.CREATED);
     }
 
     @GetMapping("/order/{orderId}")
-    public ResponseEntity<ReceiptResponse> getReceiptByOrderId(@PathVariable Long orderId) {
+    public ResponseEntity<ApiResponse<ReceiptResponse>> getReceiptByOrderId(@PathVariable Long orderId) {
         ReceiptResponse response = receiptService.getReceiptByOrderId(orderId);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping("/{receiptId}/download")

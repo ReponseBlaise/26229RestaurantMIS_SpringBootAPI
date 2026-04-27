@@ -1,6 +1,7 @@
 package com.restaurant.controller;
 
 import com.restaurant.dto.request.OrderRequest;
+import com.restaurant.dto.response.ApiResponse;
 import com.restaurant.dto.response.OrderResponse;
 import com.restaurant.model.Order;
 import com.restaurant.service.OrderService;
@@ -21,21 +22,21 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping
-    public ResponseEntity<OrderResponse> createOrder(
+    public ResponseEntity<ApiResponse<OrderResponse>> createOrder(
             @Valid @RequestBody OrderRequest request,
             @RequestHeader("X-User-Id") Long waiterId) {
         OrderResponse response = orderService.createOrder(request, waiterId);
-        return new ResponseEntity<>(response, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Order created successfully", response), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<OrderResponse> getOrderById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<OrderResponse>> getOrderById(@PathVariable Long id) {
         OrderResponse response = orderService.getOrderById(id);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success(response));
     }
 
     @GetMapping
-    public ResponseEntity<Page<OrderResponse>> getAllOrders(
+    public ResponseEntity<ApiResponse<Page<OrderResponse>>> getAllOrders(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "orderDate") String sortBy,
@@ -46,11 +47,11 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<OrderResponse> orders = orderService.getAllOrders(pageable);
-        return ResponseEntity.ok(orders);
+        return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @GetMapping("/waiter/{waiterId}")
-    public ResponseEntity<Page<OrderResponse>> getOrdersByWaiterId(
+    public ResponseEntity<ApiResponse<Page<OrderResponse>>> getOrdersByWaiterId(
             @PathVariable Long waiterId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -62,14 +63,14 @@ public class OrderController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<OrderResponse> orders = orderService.getOrdersByWaiterId(waiterId, pageable);
-        return ResponseEntity.ok(orders);
+        return ResponseEntity.ok(ApiResponse.success(orders));
     }
 
     @PutMapping("/{id}/status")
-    public ResponseEntity<OrderResponse> updateOrderStatus(
+    public ResponseEntity<ApiResponse<OrderResponse>> updateOrderStatus(
             @PathVariable Long id,
             @RequestParam Order.OrderStatus status) {
         OrderResponse response = orderService.updateOrderStatus(id, status);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(ApiResponse.success("Order status updated successfully", response));
     }
 }

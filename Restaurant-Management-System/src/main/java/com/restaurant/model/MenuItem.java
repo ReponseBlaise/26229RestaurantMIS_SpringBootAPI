@@ -1,5 +1,6 @@
 package com.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -41,10 +42,11 @@ public class MenuItem {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     // One-to-Many: MenuItem can be in multiple order items
+    @JsonIgnore
     @OneToMany(mappedBy = "menuItem")
     private List<OrderItem> orderItems;
 
-    // Many-to-Many: MenuItem can be part of multiple meal deals
+    @JsonIgnore
     @ManyToMany(mappedBy = "menuItems")
     private Set<MealDeal> mealDeals = new HashSet<>();
 }

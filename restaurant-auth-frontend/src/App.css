@@ -1,0 +1,138 @@
+.auth-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.auth-shell {
+  width: min(680px, 100%);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 28px;
+  background: linear-gradient(165deg, rgba(248, 251, 255, 0.95) 0%, rgba(238, 248, 236, 0.95) 100%);
+  box-shadow: 0 20px 45px rgba(26, 54, 93, 0.12);
+  animation: fadeUp 450ms ease;
+}
+
+.auth-header {
+  margin-bottom: 20px;
+}
+
+.kicker {
+  display: inline-block;
+  margin: 0 0 10px;
+  background: var(--ink);
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.subtitle {
+  margin-top: 10px;
+  color: var(--muted);
+}
+
+.auth-form {
+  display: grid;
+  gap: 12px;
+}
+
+.auth-form label {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.auth-form input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 13px;
+  font-size: 1rem;
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.auth-form input:focus {
+  border-color: #0c7d44;
+  box-shadow: 0 0 0 3px rgba(12, 125, 68, 0.18);
+  outline: none;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 2px;
+}
+
+.actions button {
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 11px 14px;
+  cursor: pointer;
+  transition: transform 130ms ease, opacity 130ms ease;
+}
+
+.actions button:active {
+  transform: translateY(1px);
+}
+
+.actions button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.actions button[type='submit'] {
+  background: var(--ink);
+  color: #ffffff;
+}
+
+.actions .ghost {
+  background: #ffffff;
+  color: var(--ink);
+  border: 1px solid var(--line);
+}
+
+.location-card,
+.empty-state {
+  margin-top: 18px;
+  border-radius: 14px;
+  border: 1px dashed #90b49a;
+  background: #ffffff;
+  padding: 16px;
+}
+
+.location-card h2 {
+  margin-top: 0;
+}
+
+.location-card p,
+.empty-state p {
+  margin: 7px 0;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 700px) {
+  .auth-shell {
+    border-radius: 16px;
+    padding: 20px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+}

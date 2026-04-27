@@ -1,5 +1,6 @@
 package com.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -33,8 +34,7 @@ public class MealDeal {
     @Column(name = "created_at")
     private LocalDateTime createdAt = LocalDateTime.now();
 
-    // Many-to-Many: MealDeal contains multiple menu items
-    // This is the owning side of the relationship
+    @JsonIgnore
     @ManyToMany
     @JoinTable(
         name = "meal_deal_items",

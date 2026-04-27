@@ -1,5 +1,6 @@
 package com.restaurant.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;
@@ -56,14 +57,15 @@ public class Order {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     // One-to-Many: Order contains multiple order items
+    @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    // One-to-One: Order has one receipt
+    @JsonIgnore
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private Receipt receipt;
 
-    // One-to-Many: Order has multiple status history records
+    @JsonIgnore
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderStatusHistory> statusHistory = new ArrayList<>();
 

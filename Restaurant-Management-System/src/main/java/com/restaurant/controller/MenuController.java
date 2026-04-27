@@ -2,6 +2,7 @@ package com.restaurant.controller;
 
 import com.restaurant.dto.request.MealDealRequest;
 import com.restaurant.dto.request.MenuItemRequest;
+import com.restaurant.dto.response.ApiResponse;
 import com.restaurant.model.MealDeal;
 import com.restaurant.model.MenuItem;
 import com.restaurant.service.MenuService;
@@ -22,19 +23,19 @@ public class MenuController {
     private final MenuService menuService;
 
     @PostMapping
-    public ResponseEntity<MenuItem> createMenuItem(@Valid @RequestBody MenuItemRequest request) {
+    public ResponseEntity<ApiResponse<MenuItem>> createMenuItem(@Valid @RequestBody MenuItemRequest request) {
         MenuItem menuItem = menuService.createMenuItem(request);
-        return new ResponseEntity<>(menuItem, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Menu item created successfully", menuItem), HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<MenuItem> getMenuItemById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<MenuItem>> getMenuItemById(@PathVariable Long id) {
         MenuItem menuItem = menuService.getMenuItemById(id);
-        return ResponseEntity.ok(menuItem);
+        return ResponseEntity.ok(ApiResponse.success(menuItem));
     }
 
     @GetMapping
-    public ResponseEntity<Page<MenuItem>> getAllMenuItems(
+    public ResponseEntity<ApiResponse<Page<MenuItem>>> getAllMenuItems(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
@@ -45,11 +46,11 @@ public class MenuController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<MenuItem> menuItems = menuService.getAllMenuItems(pageable);
-        return ResponseEntity.ok(menuItems);
+        return ResponseEntity.ok(ApiResponse.success(menuItems));
     }
 
     @GetMapping("/category/{category}")
-    public ResponseEntity<Page<MenuItem>> getMenuItemsByCategory(
+    public ResponseEntity<ApiResponse<Page<MenuItem>>> getMenuItemsByCategory(
             @PathVariable String category,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
@@ -61,15 +62,15 @@ public class MenuController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<MenuItem> menuItems = menuService.getMenuItemsByCategory(category, pageable);
-        return ResponseEntity.ok(menuItems);
+        return ResponseEntity.ok(ApiResponse.success(menuItems));
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<MenuItem> updateMenuItem(
+    public ResponseEntity<ApiResponse<MenuItem>> updateMenuItem(
             @PathVariable Long id,
             @Valid @RequestBody MenuItemRequest request) {
         MenuItem menuItem = menuService.updateMenuItem(id, request);
-        return ResponseEntity.ok(menuItem);
+        return ResponseEntity.ok(ApiResponse.success("Menu item updated successfully", menuItem));
     }
 
     @DeleteMapping("/{id}")
@@ -80,19 +81,19 @@ public class MenuController {
 
     // Meal Deal endpoints (Many-to-Many relationship)
     @PostMapping("/meal-deals")
-    public ResponseEntity<MealDeal> createMealDeal(@Valid @RequestBody MealDealRequest request) {
+    public ResponseEntity<ApiResponse<MealDeal>> createMealDeal(@Valid @RequestBody MealDealRequest request) {
         MealDeal mealDeal = menuService.createMealDeal(request);
-        return new ResponseEntity<>(mealDeal, HttpStatus.CREATED);
+        return new ResponseEntity<>(ApiResponse.success("Meal deal created successfully", mealDeal), HttpStatus.CREATED);
     }
 
     @GetMapping("/meal-deals/{id}")
-    public ResponseEntity<MealDeal> getMealDealById(@PathVariable Long id) {
+    public ResponseEntity<ApiResponse<MealDeal>> getMealDealById(@PathVariable Long id) {
         MealDeal mealDeal = menuService.getMealDealById(id);
-        return ResponseEntity.ok(mealDeal);
+        return ResponseEntity.ok(ApiResponse.success(mealDeal));
     }
 
     @GetMapping("/meal-deals")
-    public ResponseEntity<Page<MealDeal>> getAllMealDeals(
+    public ResponseEntity<ApiResponse<Page<MealDeal>>> getAllMealDeals(
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "10") int size,
             @RequestParam(defaultValue = "name") String sortBy,
@@ -103,6 +104,6 @@ public class MenuController {
         Pageable pageable = PageRequest.of(page, size, sort);
         
         Page<MealDeal> mealDeals = menuService.getAllMealDeals(pageable);
-        return ResponseEntity.ok(mealDeals);
+        return ResponseEntity.ok(ApiResponse.success(mealDeals));
     }
 }
